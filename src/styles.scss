@@ -1,0 +1,46 @@
+.center-hor{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.center-ver{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.center{
+  @extend .center-hor;
+  @extend .center-ver;
+}
+
+.login-page{
+  width: 500px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  background-color: white;
+  border-radius: 6px;
+  padding: 10px 20px;
+  margin: auto;
+  border: 1px solid rgba(0,0,0,.125);
+}
+
+.root{
+  height: 100vh;
+  display: flex;
+}
+
+.flex-row{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.flex-column{
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
