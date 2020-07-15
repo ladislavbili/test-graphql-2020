@@ -1,50 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter, Route} from 'react-router-dom';
-import Navigation from './navigation';
+import Navigation from './pages/navigation';
+import Login from './pages/login';
+import moment from 'moment';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './styles.scss';
 
-import { ApolloClient } from "apollo-client";
-import { InMemoryCache } from "apollo-cache-inmemory";
-import { HttpLink } from "apollo-link-http";
-import { ApolloProvider } from "@apollo/react-hooks";
-import jwtDecode from 'jwt-decode';
-import { setContext } from 'apollo-link-context';
+import gql from "graphql-tag";
+import { ApolloProvider, useQuery } from "@apollo/react-hooks";
+import createClient from './apollo/createClient';
 
-const cache = new InMemoryCache();
-const link = new HttpLink({
-  uri: "http://localhost:4000/graphql"
-});
-
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem('acctok');
-  if( !token ){
-    return headers;
+const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
   }
-  console.log(jwtDecode(token));
-  return {
-    headers: {
-      ...headers,
-      authorization: `Bearer ${token}`,
-    }
-  }
-});
+`;
 
-const client = new ApolloClient({
-  cache,
-  link: authLink.concat(link)
-});
+function IsLoggedIn() {
+  const { data } = useQuery(IS_LOGGED_IN);
+  return data.isLoggedIn ? <Navigation /> : <Login />;
+}
+
+const client = createClient();
 
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <div>
-          <Route path='/' component={Navigation} />
-        </div>
-      </BrowserRouter>
+      <IsLoggedIn />
     </ApolloProvider>
 
   </React.StrictMode>,
